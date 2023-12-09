@@ -163,9 +163,14 @@ int main()
     {
         //堵塞程序直到新的一帧捕获
         rs2::frameset frameset = pipe.wait_for_frames();
+        rs2::frame depth_frame = frameset.get_depth_frame();
+        if (!depth_frame)
+        {
+            std::cout << "没有有效的深度帧。" << std::endl;
+            continue;  // 如果没有深度帧，继续下一次循环
+        }
         //取深度图和彩色图
         rs2::frame color_frame = frameset.get_color_frame();//processed.first(align_to);
-        rs2::frame depth_frame = frameset.get_depth_frame();
         rs2::frame depth_frame_4_show = frameset.get_depth_frame().apply_filter(c);
         //获取宽高
         const int depth_w=depth_frame.as<rs2::video_frame>().get_width();
